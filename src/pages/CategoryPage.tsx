@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../userAuth/firebase";
-import { FaStar, FaRegHeart } from "react-icons/fa";
-import logo from "../assets/loading_logo.png"; 
+import { FaStar } from "react-icons/fa";
+import logo from "../assets/loading_logo.png";
+import WishlistHeart from "@/components/WishlistHeart";
 
 interface Product {
   id: string;
@@ -40,14 +41,13 @@ const CategoryPage: React.FC = () => {
     return () => unsubscribe();
   }, [categoryName]);
 
-  
-   if (loading) {
-      return (
-        <div className="flex justify-center items-center h-screen">
-          <img src={logo} alt="Loading..." className="w-16 h-16 animate-bounce" />
-        </div>
-      );
-    }
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <img src={logo} alt="Loading..." className="w-16 h-16 animate-bounce" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-white py-10">
@@ -60,9 +60,7 @@ const CategoryPage: React.FC = () => {
           {products.map((product) => (
             <Link key={product.id} to={`/product/${product.id}`}>
               <div className="border rounded shadow p-3 relative">
-                <div className="absolute top-2 right-2 text-red-400 text-xl cursor-pointer">
-                  <FaRegHeart />
-                </div>
+                <WishlistHeart product={product} />
 
                 <img
                   src={

@@ -5,19 +5,19 @@ import {
   onSnapshot,
   getDoc,
   setDoc,
-  deleteDoc,
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../userAuth/firebase";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/userAuth/firebase";
-import { FaStar, FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaStar} from "react-icons/fa";
 import ReviewForm from "@/utils/ReviewForm";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import logo from "../assets/loading_logo.png";
 import YouMayAlsoLike from "@/components/YouMayAlsoLike";
+import WishlistHeart from "@/components/WishlistHeart";
 
 interface Product {
   id: string;
@@ -58,10 +58,10 @@ const ProductPage: React.FC = () => {
   const [user] = useAuthState(auth);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [sizeError, setSizeError] = useState<string | null>(null);
-
-  const [isSaved, setIsSaved] = useState(false);
   const { id: productIdFromRoute } = useParams();
 
+  
+  
   // Saved items logic
   useEffect(() => {
     if (!productId) return;
@@ -83,41 +83,10 @@ const ProductPage: React.FC = () => {
     return () => unsubscribe();
   }, [productId]);
 
-  // check if product is saved
-  useEffect(() => {
-    if (!user || !productId) return;
+  
+  
+  
 
-    const savedRef = doc(db, "users", user.uid, "savedItems", productId);
-    const unsubscribe = onSnapshot(savedRef, (docSnap) => {
-      setIsSaved(docSnap.exists());
-    });
-
-    return () => unsubscribe();
-  }, [user, productId]);
-
-  const handleToggleSaved = async () => {
-    if (!user || !product) {
-      navigate("/signin");
-      return;
-    }
-
-    const savedRef = doc(db, "users", user.uid, "savedItems", product.id);
-    const docSnap = await getDoc(savedRef);
-
-    if (docSnap.exists()) {
-      await deleteDoc(savedRef);
-      toast.success("Removed from wish list!");
-    } else {
-      await setDoc(savedRef, {
-        name: product.name,
-        price: product.price,
-        oldPrice: product.oldPrice,
-        image: product.images[0],
-        timestamp: serverTimestamp(),
-      });
-      toast.success("Added to wish list!");
-    }
-  };
 
   // Add to cart logic
   const handleAddToCart = async () => {
@@ -275,16 +244,8 @@ const ProductPage: React.FC = () => {
                 alt={product.name}
                 className="w-full h-[500px] object-contain rounded-lg border"
               />
-              <div
-                className="absolute top-5 right-10 text-red-400 text-2xl cursor-pointer transition-transform duration-200 hover:scale-125"
-                onClick={handleToggleSaved}
-              >
-                {isSaved ? (
-                  <FaHeart className="text-red-500" />
-                ) : (
-                  <FaRegHeart />
-                )}
-              </div>
+               <WishlistHeart product={product} />
+            
             </div>
 
             {/* Thumbnail Gallery */}
