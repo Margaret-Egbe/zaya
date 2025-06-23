@@ -123,7 +123,7 @@ const SavedItems: React.FC = () => {
       <h1 className="text-2xl font-bold mb-6"> Wish List </h1>
 
       {savedItems.length === 0 ? (
-        <p className="text-gray-600">You haven’t saved any items yet.</p>
+        <p className="text-gray-600">You haven’t added any item to your wish list yet.</p>
       ) : (
         <div className="flex flex-col gap-6">
           {savedItems.map(({ id, data }) => (

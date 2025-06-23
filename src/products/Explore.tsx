@@ -47,7 +47,7 @@ const Explore: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
       {explore.map((product) => (
         <Link to={`/product/${product.id}`} key={product.id}>
           <div className="min-w-[170px] md:min-w-[180px] bg-white rounded-lg p-3 text-black shadow hover:shadow-lg cursor-pointer">

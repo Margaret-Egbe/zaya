@@ -1,4 +1,7 @@
 .env
+serviceAccountKey.json
+setAdmin.cjs
+
 # Logs
 logs
 *.log
