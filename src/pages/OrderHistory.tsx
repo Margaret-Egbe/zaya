@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "@/userAuth/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { collection, query, where, orderBy } from "firebase/firestore";
+import { collection, query,orderBy } from "firebase/firestore";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -49,11 +49,11 @@ const OrderHistory = () => {
 useEffect(() => {
   if (!user) return;
 
-  const q = query(
-    collection(db, "orders"),
-    where("userId", "==", user.uid),
-    orderBy("date", "desc")
-  );
+ const q = query(
+  collection(db, `users/${user.uid}/orders`),
+  orderBy("date", "desc")
+);
+
 
   const unsubscribe = onSnapshot(q, (snap) => {
     const results = snap.docs.map((doc) => ({

@@ -47,7 +47,8 @@ const Categories: React.FC = () => {
             <img
               src={category.imageUrl}
               alt={category.name}
-              className="w-24 h-24 object-contain mb-2 py-2 bg-[#EAEAEA] rounded"
+               loading="lazy"
+              className="w-24 h-24 object-contain mb-2 py-4 items-center bg-[#EAEAEA] rounded"
             />
             <span className="text-gray-700 font-medium text-sm">{category.name}</span>
           </div>

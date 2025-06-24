@@ -38,7 +38,7 @@ const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
           }}
           loop={true}
           autoplay={{ delay: 3000, disableOnInteraction: false }}
-          className="w-full h-full "
+          className="w-full h-full"
         >
           {cardImages.map((src, idx) => (
             <SwiperSlide key={idx}>
@@ -46,7 +46,7 @@ const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
                 <img
                   src={src}
                   alt={`Card ${idx}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-sm"
                 />
               </div>
             </SwiperSlide>

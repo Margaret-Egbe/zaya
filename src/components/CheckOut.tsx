@@ -64,8 +64,8 @@ const paymentMethods = [
   {
     id: "googlepay",
     name: "Google Pay",
-    icon: <img src={GooglePay} alt="Google Pay" className="w-6 h-6" />,
-    description: "Pay seamlessly using your saved cards or linked bank",
+    icon: <img src={GooglePay} alt="Google Pay" className="w-9 h-9" />,
+  
   },
 ];
 

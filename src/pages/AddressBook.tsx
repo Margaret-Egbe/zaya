@@ -3,8 +3,10 @@ import { collection, getDocs } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { db, auth } from "@/userAuth/firebase";
 import { Card } from "@/components/ui/card";
-import { Loader2, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import AddressFormDialog from "@/components/AddressFormDialog";
+import logo from "../assets/loading_logo.png";
+
 
 type Address = {
   id: string;
@@ -48,9 +50,9 @@ export default function AddressBook() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center mt-20">
-        <Loader2 className="animate-spin text-purple-600 w-6 h-6" />
+      return (
+      <div className="flex justify-center items-center h-screen">
+        <img src={logo} alt="Loading..." className="w-16 h-16 animate-bounce" />
       </div>
     );
   }

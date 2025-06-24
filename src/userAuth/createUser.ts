@@ -1,11 +1,7 @@
 import {
-  collection,
   doc,
-  getDocs,
-  query,
   serverTimestamp,
   setDoc,
-  where,
 } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import { toast } from "sonner";
@@ -22,54 +18,44 @@ export const createUser = async (
   onSuccess: () => void
 ) => {
   try {
-    //This logic is check if email has already been used to sign up before
     console.log("🟢 Starting user creation...");
 
-    const q = query(collection(db, "users"), where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      toast.error("This email is already in use. Try logging in instead");
-      console.error("🔴 Firestore says email already exists.");
-
-      throw new Error("This email is already in use.");
-
-      console.log("User already exists, duplicated account suspected");
-    }
-
-    //Check authentication system for exisiting email
+    // ✅ Check if email is already registered in Firebase Auth
     const signInMethods = await fetchSignInMethodsForEmail(auth, email);
     if (signInMethods.length > 0) {
-      toast.error("This email is already registed. Try logging in instead");
+      toast.error("This email is already registered. Try logging in instead");
       console.error("🔴 Auth says email already exists.");
-
       throw new Error("Email already in use");
-      return;
     }
 
-    //Create New user Account
+    // ✅ Create Firebase Auth user
     console.log("🟢 Creating Firebase Auth user...");
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+
+    await userCredential.user.getIdToken(true); // Force refresh token
+    await new Promise((res) => setTimeout(res, 500)); // Small delay
+
     const user = userCredential.user;
     console.log("✅ User created:", user.uid);
+
+    // ✅ Update profile
     await updateProfile(user, { displayName: fullName });
 
+    // ✅ Save user data to Firestore
     console.log("🟢 Saving user to Firestore...");
     await setDoc(doc(db, "users", user.uid), {
       fullName: fullName,
       email: email,
       createdAt: serverTimestamp(),
     });
-  
 
     onSuccess();
-
-    console.log("Sign up succes", userCredential.user);
     console.log("🎉 Signup complete.");
+
   } catch (error) {
     if (error instanceof Error) {
       toast.error(error.message, {

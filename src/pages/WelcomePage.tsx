@@ -66,7 +66,7 @@ const WelcomeUserMobile = () => {
             className="flex items-center gap-3 text-gray-700 cursor-pointer hover:text-primary transition"
           >
             <FavoriteBorderOutlinedIcon className="text-lg" />
-            <span className="text-base font-medium">Saved Items</span>
+            <span className="text-base font-medium">Wish Lists</span>
           </div>
 
           <div

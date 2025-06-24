@@ -7,6 +7,7 @@ import {
   deleteDoc,
   addDoc,
   Timestamp,
+  setDoc,
 } from "firebase/firestore";
 import { auth, db } from "@/userAuth/firebase";
 import emailjs from "@emailjs/browser";
@@ -62,9 +63,13 @@ export async function processOrder(
       .map(
         (item) => `
         <div style="display: flex; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 12px;">
-          <img src="${item.image}" alt="${item.name}" width="50" height="50" style="border-radius: 6px; margin-right: 16px; object-fit: contain;" />
+          <img src="${item.image}" alt="${
+          item.name
+        }" width="50" height="50" style="border-radius: 6px; margin-right: 16px; object-fit: contain;" />
           <div>
-            <p style="margin: 0; font-weight: bold; font-size: 15px;">${item.name}</p>
+            <p style="margin: 0; font-weight: bold; font-size: 15px;">${
+              item.name
+            }</p>
             <p style="margin: 2px 0; color: #555;">Qty: ${item.quantity}</p>
             ${
               item.size
@@ -104,7 +109,7 @@ export async function processOrder(
       oldPrice: item.oldPrice,
       subtotal,
       size: item.size || null,
-       image: item.image,
+      image: item.image,
     })),
     total,
     subtotal,
@@ -119,21 +124,24 @@ export async function processOrder(
 
   const orderRef = await addDoc(collection(db, "orders"), orderData);
   const orderId = orderRef.id;
+  // 🔁 Also save to user's personal orders for OrderHistory page
+  if (user) {
+    await setDoc(doc(db, `users/${user.uid}/orders/${orderId}`), orderData);
+  }
 
   // 10. Send confirmation email
- await emailjs.send(
-  import.meta.env.VITE_EMAILJS_SERVICE_ID,
-  import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-  {
-    order_id: orderId,
-    to_email: orderData.email,
-    user_name: user?.displayName || "Guest",
-    payment_method: paymentMethod,
-    order_summary_html: orderHtml,
-  },
-  import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-);
-
+  await emailjs.send(
+    import.meta.env.VITE_EMAILJS_SERVICE_ID,
+    import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+    {
+      order_id: orderId,
+      to_email: orderData.email,
+      user_name: user?.displayName || "Guest",
+      payment_method: paymentMethod,
+      order_summary_html: orderHtml,
+    },
+    import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+  );
 
   // 11. Clear cart
   if (user) {

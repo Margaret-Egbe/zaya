@@ -74,11 +74,13 @@ const Header = () => {
 
             <div className="flex items-center space-x-3">
               {/* Icons */}
+                
               <button
                 onClick={() => handleProtectedClick("/welcomeUserMobile")}
-                className="text-2xl"
+                className="text-2xl flex items-center"
               >
                 {user ? <BsPersonCheck /> : <MdPersonOutline />}
+                <FiChevronDown className="text-lg" />
               </button>
 
               <Link to="/cart" className=" ">
@@ -156,7 +158,7 @@ const Header = () => {
                 >
                   <div className="flex items-center gap-2 text-black cursor-pointer">
                     <FavoriteBorderOutlinedIcon />
-                    Saved Items
+                    Wish Lists
                   </div>
                 </DropdownMenuItem>
 
